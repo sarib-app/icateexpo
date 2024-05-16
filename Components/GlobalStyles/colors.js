@@ -11,7 +11,7 @@ const Colors = {
     danger:"red",
     lightTxt:"#B4B4B4",
     bgIII:"#232323",
-    bgIv:"#303030",
+    bgIv:"#3030030",
     Dark:"black",
     send:"#1db954",
     deposit:"#FF5534"
