@@ -4,6 +4,9 @@ import { View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity } from 'r
 // Mock data for search results
 import { useNavigation } from '@react-navigation/native';
 import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
+import HeaderScreens from '../GlobalStyles/HeaderScreens';
+import Colors from '../GlobalStyles/colors';
+import RestaurantListItem from '../SearchResult/RestaurantListItem';
 export const searchData = [
   { id: 1, name: 'Espresso', category: 'Product' },
   { id: 2, name: 'Cappuccino', category: 'Product' },
@@ -22,17 +25,34 @@ const SearchScreen = () => {
   // Function to handle search query and update results
   const handleSearch = (query) => {
     setSearchQuery(query)
-    const filteredResults = searchData.filter(
-      (item) =>
-        item.name.toLowerCase().includes(query.toLowerCase()) &&
-        (selectedCategory === 'All' || item.category === selectedCategory)
-    );
-    setSearchResults(filteredResults);
+    const formdata = new FormData();
+formdata.append("query",query);
+
+const requestOptions = {
+  method: "POST",
+  body: formdata,
+  redirect: "follow"
+};
+
+fetch("https://zhang.alphanitesofts.net/api/search_store", requestOptions)
+  .then((response) => response.json())
+  .then((result) => {
+    if(result.status === "200"){
+      setSearchResults(result.stores)
+    }
+    console.log(result)})
+  .catch((error) => console.error(error));
   };
 
   return (
+    <>
+        <HeaderScreens 
+        ScreenName={"Search Store"}
+        />
     <View style={styles.container}>
+     
       <View style={styles.topSection}>
+     
         <TextInput
           style={styles.searchInput}
           placeholderTextColor={"white"}
@@ -49,19 +69,27 @@ const SearchScreen = () => {
           </Text>
         </TouchableOpacity> */}
       </View>
+
       <FlatList
+        data={searchResults}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => <RestaurantListItem restaurant={item} />}
+      />
+      {/* <FlatList
         data={searchResults}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <Pressable 
-          onPress={()=> navigation.navigate("ResturantSearchResult")}
+          onPress={()=> navigation.navigate("ResturantSearchResult",  {query:searchQuery})}
           style={styles.resultItem}>
             <Text style={styles.resultName}>{item.name}</Text>
             <Text style={styles.resultCategory}>{item.category}</Text>
           </Pressable>
         )}
-      />
+      /> */}
     </View>
+    </>
+
   );
 };
 
@@ -69,7 +97,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#1E1E1E', // Dark background color
+    backgroundColor: Colors.Dark, // Dark background color
   },
   topSection: {
     flexDirection: 'row',

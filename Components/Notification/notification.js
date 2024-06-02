@@ -12,100 +12,45 @@ import styles from './Styles';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import Colors from '../GlobalStyles/colors';
 import notificationIcon from '../../assets/images/notification.png'
 import { FlatList } from 'react-native-gesture-handler';
 
 // import BackBtn from '../GlobalStyles/BackButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import getNotification from '../GlobalCalls/GetNotification';
+import GetLocalUser from '../Auth/GetLocalUser';
 
 function Notification() {
 
 
 
 const navigation = useNavigation()
+const focused = useIsFocused()
 
   const [notification,setNotification]=useState([])
  
   
-  const data = notification 
 
+useEffect(()=>{
+async function getNotif(){
 
-
-  
-//   async function getAsyncData () {
-//     const user = await AsyncStorage.getItem('user')
-//     const token = await AsyncStorage.getItem('token')
-//     let userParsed=JSON.parse(user) 
-//     if(token){
-  
-// getNotification(userParsed.id)
-  
-  
-//     }
-//   }
-
-
-
-
-const notifsData=[
-  {
-    id:1,
-    title:"Recieved JGK",
-    body:'You have recieved 2.2 JGK',
-    Idate:"23-02-2023"
-  },
-  {
-    id:2,
-    title:"Order Accepted",
-    body:'Your order has been accepted, and in progress!',
-    Idate:"23-02-2023"
-  },
-  {
-    id:3,
-    title:"Congratulations!",
-    body:'You won daily login reward ! please collect now!You won daily login reward ! please collect now!',
-    Idate:"23-02-2023"
-  },
-  {
-    id:4,
-    title:"Recieved JGK",
-    body:'You have recieved 2.2 JGK, Loreum is pumn Ipsoaniol soilkil aksm smkmnajso  mmsnd smnaklsndasndlas, asdasd ',
-    Idate:"23-02-2023"
-  },
-  {
-    id:5,
-    title:"Order Accepted",
-    body:'Your order has been accepted, and in progress!You have recieved 2.2 JGK, Loreum is pumn Ipsoaniol soilkil aksm smkmnajso  mmsnd smnaklsndasndlas, asdasd',
-    Idate:"23-02-2023"
-  },
-  {
-    id:6,
-    title:"Congratulations!",
-    body:'You won daily login reward ! please collect now! You won daily login reward ! please collect now!',
-    Idate:"23-02-2023"
-  },
-  {
-    id:7,
-    title:"Recieved JGK",
-    body:'You have recieved 2.2 JGK, You won daily login reward ! please collect now!',
-    Idate:"23-02-2023"
-  },
-  {
-    id:8,
-    title:"Order Accepted",
-    body:'Your order has been accepted, and in progress!,.You won daily login reward ! please collect now!',
-    Idate:"23-02-2023"
-  },
-  {
-    id:9,
-    title:"Congratulations!",
-    body:'You won daily login reward ! please collect now!,You won daily login reward ! please collect now!',
-    Idate:"23-02-4"
+  const getUser = await GetLocalUser()
+  if(getUser != null){
+    const res = await getNotification(getUser.id)
+    if(res != null){
+       setNotification(res.data)
+    }
   }
-  
-]
+
+}
+getNotif()
+
+
+
+},[focused])
+
 
 
 
@@ -175,7 +120,7 @@ style={[styles.TextStyle,{color:selected===2 ? Colors.FontColorI:Colors.bgIII}]}
 </View> */}
 
 <FlatList 
-data={notifsData}
+data={notification}
 renderItem={({item,index})=>
 <Notificationlist  item={item} index={index} 
 />

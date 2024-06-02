@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import Colors from '../GlobalStyles/colors';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import GetLocalUser from '../Auth/GetLocalUser';
+import getOrderData from '../GlobalCalls/getOrderData';
 
 const ORDERS_DATA = [
   {
@@ -61,7 +63,9 @@ const ORDERS_DATA = [
 
 const OrderList = () => {
     const navigation = useNavigation()
-  const [orders, setOrders] = useState(ORDERS_DATA);
+    const focused = useIsFocused()
+
+  const [orders, setOrders] = useState();
   const [selectedFilter, setSelectedFilter] = useState('All');
 
   const filterOrders = (status) => {
@@ -74,14 +78,35 @@ const OrderList = () => {
     }
   };
 
+
+
+  useEffect(()=>{
+    async function getOrders(){
+    
+      const getUser = await GetLocalUser()
+      if(getUser != null){
+        const res = await getOrderData(getUser.id)
+        if(res != null){
+           setOrders(res.data)
+        }
+      }
+    
+    }
+    getOrders()
+    
+    
+    
+    },[focused])
   const renderOrderItem = ({ item }) => (
     <TouchableOpacity 
     style={styles.orderItemContainer} 
-    onPress={() => navigation.navigate("OrderTakenScreen")}
+    onPress={() => navigation.navigate("OrderTakenScreen",{data:{totalBill:item.total_bill,pickupCode:item.pickcode}})}
     >
-      <Text style={styles.orderIdText}>Pick up Code: {item.pickCode}</Text>
+      <Text style={styles.orderIdText}>Pick up Code: {item.pickcode}</Text>
       <Text style={styles.statusText}>Status: {item.status}</Text>
-      <Text style={styles.totalBillText}>Total Bill: ${item.totalBill.toFixed(2)}</Text>
+      <Text style={styles.totalBillText}>Total Bill: ${item.total_bill.toFixed(2)}</Text>
+      <Text style={styles.totalBillText}>Date {item.Idate}</Text>
+
       <Icon name="chevron-right" size={20} color="black" style={styles.forwardIcon} />
     </TouchableOpacity>
   );
@@ -90,7 +115,7 @@ const OrderList = () => {
 
 <TouchableOpacity
           style={[styles.filterButton, selectedFilter === 'All' && styles.selectedFilterButton]}
-          onPress={() => filterOrders('All')}
+          // onPress={() => filterOrders('All')}
         >
           <Text style={styles.filterButtonText}>Your order history is below</Text>
         </TouchableOpacity>

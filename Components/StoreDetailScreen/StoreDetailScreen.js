@@ -50,7 +50,9 @@ useEffect(()=>{
 function getGoods(){
   var formdata = new FormData();
 formdata.append("token", "4YgUjOLnZ6x6b3tPVOCBMX5y");
-formdata.append("code", item.machineId);
+// formdata.append("code", item.machineId);
+formdata.append("code", "AWafp380o7");
+
 
 var requestOptions = {
   method: 'POST',
@@ -119,16 +121,16 @@ return(
     <ScrollView
     nestedScrollEnabled={true}
     >
-      <Image source={{ uri: storeData.banner }} style={styles.storeBanner} />
+      <Image source={{ uri: item.banner }} style={styles.storeBanner} />
 
       <View style={styles.storeInfoContainer}>
-        <Text style={styles.storeName}>{storeData.name}</Text>
+        <Text style={styles.storeName}>{item.name}</Text>
         <View style={styles.storeRatingContainer}>
           <Icon name="star" size={18} color="#FFD700" />
-          <Text style={styles.storeRating}>{storeData.rating}</Text>
+          <Text style={styles.storeRating}>{item.rating}</Text>
         </View>
-        <Text style={styles.storeDescription}>{storeData.description}</Text>
-        <Text style={styles.storeStatus}>{storeData.isOpen ? 'Open Now' : 'Closed'}</Text>
+        <Text style={styles.storeDescription}>{item.description}</Text>
+        <Text style={styles.storeStatus}>Open Now</Text>
       </View>
 
         <Text style={styles.sectionTitle}>Products</Text>

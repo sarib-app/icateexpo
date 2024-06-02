@@ -1,5 +1,5 @@
 import React, {useEffect,useState} from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, FlatList, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, FlatList, Pressable, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons'; // You can use any icon library you prefer
 import Colors from '../GlobalStyles/colors';
 import { useNavigation } from '@react-navigation/native';
@@ -8,6 +8,9 @@ import HandleAddCart from '../ProductCart/HandleAddCart';
 import AddToCartModal from '../ProductCart/AddToCartModal';
 import ViewCart from '../GlobalStyles/ViewCart';
 import { useIsFocused } from '@react-navigation/native';
+import GetLocalUser from '../Auth/GetLocalUser';
+import getStores from '../GlobalCalls/getStores';
+import CheckJGK from '../GlobalCalls/CheckJGK';
 const Home = () => {
 
 const focused = useIsFocused()
@@ -17,12 +20,44 @@ const focused = useIsFocused()
   const [showCartButton,setShowCartButton] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [stores,setStores]=useState([])
+  const [user,setUser]=useState()
+
+  useEffect(()=>{
+    async function getAllStores(){
+    
+     
+        const res = await getStores()
+        if(res != null){
+          setStores(res.Data)
+        }
+      
+    
+    }
+    getAllStores()
+    
+    
+    
+    },[focused])
 
   useEffect(()=>{
     
     existingCartCheck()
      
   },[focused])
+  useEffect(()=>{
+    
+  async function getLocalData(){
+    const user = await GetLocalUser()
+    if(user != null){
+      setUser(user)
+    }
+  }
+  getLocalData()
+     
+  },[focused])
+
+
   useEffect(()=>{
     existingCartCheck()
   },[forceCheck])
@@ -67,10 +102,15 @@ const focused = useIsFocused()
       <Image source={{ uri: 'https://t4.ftcdn.net/jpg/03/14/86/17/360_F_314861732_1MnoYhjA81pqeibaEJgAfXJBr0XERD5I.jpg' }} style={styles.bannerImage} />
 
       {/* Collect Daily Rewards */}
-      <View style={styles.rewardContainer}>
+      {
+        user &&
+      <TouchableOpacity
+      onPress={()=> {CheckJGK(user.id)} }
+      style={styles.rewardContainer}>
         <Icon name="card-giftcard" size={30} color="#fff" />
         <Text style={styles.rewardText}>Collect Your Daily Login Rewards</Text>
-      </View>
+      </TouchableOpacity>
+      }
 
   
       {/* Categories */}
@@ -94,7 +134,7 @@ const focused = useIsFocused()
       <View style={styles.sectionContainer}>
         <Text style={styles.sectionTitle}>Popular Stores</Text>
         <FlatList
-          data={popularStores}
+          data={stores}
           horizontal
           showsHorizontalScrollIndicator={false}
           keyExtractor={(item) => item.id.toString()}

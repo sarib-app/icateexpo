@@ -15,24 +15,38 @@ import InviteEarn from '../Invite&earn/InviteEarn';
 import { useIsFocused } from '@react-navigation/native';
 import Tos from '../App\'sContent/Tos';
 import PrivacyPolicy from '../App\'sContent/PrivacyPolicy';
+import GetLocalUser from '../Auth/GetLocalUser';
+import getUserData from '../GlobalCalls/getUserData';
+import * as Linking from 'expo-linking';
 const Profile = () => {
   const focused=useIsFocused()
 const navigation =  useNavigation()
 const [showPrivacy, setShowPrivacy] = useState(false);
 const [showTos, setShowTos] = useState(false);
-const [user,setUser]=useState(
-  {
-      id:"userr.id",
-      email:"userr.email",
-      firstname:"Shawn",
-      Lastname:"Dr",
-      Phone:"userr.phone",
-      username:"userr.username"
-  }
-)
+const [user,setUser]=useState()
 const iconColor = Colors.FontColorI
 const [showIvitationModal,setShowInvitationModal]=useState(false)
 
+
+
+
+useEffect(()=>{
+  async function getUser(){
+  
+    const getUser = await GetLocalUser()
+    if(getUser != null){
+      const res = await getUserData(getUser.id)
+      if(res != null){
+         setUser(res.data)
+      }
+    }
+  
+  }
+  getUser()
+  
+  
+  
+  },[focused])
 
 function onHideInvitation(){
   setShowInvitationModal(false)
@@ -51,6 +65,11 @@ function onHideTos(){
     setShowPrivacy((p)=> !p)
   
   }
+
+  function openLinkning(name){
+    Linking.openURL(`https://${name}.alphanitesofts.net`);
+
+  }
   return (
 
     <View 
@@ -63,8 +82,7 @@ function onHideTos(){
       showsVerticalScrollIndicator={false}
       
       >
-   {
-    user !=null &&
+
 <View style={Styles.CardWrapperTop}>
  
 
@@ -82,11 +100,11 @@ style={{width:40,height:40,borderRadius:1000}}
 style={GlobalStyles.TitleText}
 
 >
-  {user.firstname+" "+user.Lastname} 
+  {user?.username || "---"} 
 </Text>
 </View>
 <TouchableHighlight
-onPress={()=> navigation.navigate("ProfileDetails", user)}
+onPress={()=> navigation.navigate("ProfileDetails", {userData:user})}
 
 >
 
@@ -101,7 +119,6 @@ color={Colors.FontColorI}
 
 </View>
 
-}
 
 <View
 
@@ -163,10 +180,10 @@ style={GlobalStyles.textStyle}
 <Text
 style={GlobalStyles.textStyle}
 >
-  100
+  {user?.JGK || "--"}
 </Text>
 </View>
-<View style={Styles.CardWrapperBottom}>
+{/* <View style={Styles.CardWrapperBottom}>
 
 <View
   style={{flexDirection:'row',alignItems:'center'}}
@@ -198,7 +215,7 @@ color={Colors.FontColorI}
 />
 </TouchableHighlight>
 
-</View>
+</View> */}
 
 {/* <View style={Styles.CardWrapperBottom}>
 
@@ -468,7 +485,9 @@ style={Styles.CardWrapperALL}
 
 
 
-<View style={Styles.CardWrapperBottom}>
+<TouchableOpacity 
+onPress={()=> openLinkning("icate-delete-account")}
+style={Styles.CardWrapperBottom}>
 
 <View
   style={{flexDirection:'row',alignItems:'center'}}
@@ -495,7 +514,7 @@ size={20}
 color={'transparent'}
 />
 
-</View>
+</TouchableOpacity>
 
 
 

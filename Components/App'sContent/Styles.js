@@ -51,7 +51,27 @@ const styles = StyleSheet.create({
         alignItems:'center',
         justifyContent:'space-around',
         marginTop:10
-    }
+    },
+    textStyle: {
+        fontSize: 16,
+        color: Colors.FontColorI,
+        marginBottom: 10,
+        lineHeight: 22,
+      },
+      headerStyle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: Colors.FontColorI,
+        marginTop: 20,
+        marginBottom: 10,
+      },
+      subHeaderStyle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: Colors.FontColorI,
+        marginTop: 10,
+        marginBottom: 5,
+      },
 
 
 });

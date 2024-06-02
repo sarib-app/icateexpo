@@ -7,8 +7,9 @@ import Colors from '../GlobalStyles/colors';
 import QR from '../../assets/images/QR.png'
 import QRCode from 'react-native-qrcode-svg';
 
-const OrderTakenScreen = () => {
-
+const OrderTakenScreen = ({route}) => {
+const data = route.params
+console.log("data >>>",data?.data?.pickupCode)
   return (
     <View style={styles.container}>
       <HeaderScreens
@@ -18,9 +19,9 @@ const OrderTakenScreen = () => {
       <View style={styles.CardWrapper}>
 
       <View style={styles.orderSummary}>
-        <Text style={styles.orderIdText}>Your Pickup Code: #62808659</Text>
+        <Text style={styles.orderIdText}>Your Pickup Code: #{data?.data?.pickupCode}</Text>
         <Text style={styles.totalBillText}>You can pick your order by showing the QR code</Text>
-        <Text style={styles.totalBillText}>Total Bill: $200</Text>
+        <Text style={styles.totalBillText}>Total Bill: $ {data?.data?.totalBill}</Text>
         <Text style={styles.totalBillText}>Estimated Time 5 Min</Text>
 
       </View>
@@ -45,7 +46,7 @@ source={QR}
 style={{width:200,height:200,tintColor:Colors.FontColorI}}
 /> */}
    <QRCode
-      value="62808659"
+      value={String(data?.data?.pickupCode)}
       size={200}
     />
   </View>

@@ -46,7 +46,7 @@ return(
 
   <WebView 
 style={{width:350,height:600}}
-source={{uri: "http://termsandconditions.plshare.com/"}}
+source={{uri: "http://icate-tos.alphanitesofts.net"}}
 javaScriptEnabled={true}
 domStorageEnabled={true}
 startInLoadingState={true}
@@ -55,7 +55,7 @@ startInLoadingState={true}
 
 <WebView 
 style={{width:350,height:600}}
-source={{uri: "https://privacypolicy.plshare.com/"}}
+source={{uri: "https://icate-privacy-policy.alphanitesofts.net"}}
 javaScriptEnabled={true}
 domStorageEnabled={true}
 startInLoadingState={true}

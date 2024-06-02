@@ -14,7 +14,7 @@ const Registration = ({
    
   const [username, setUsername] = useState('');
   const [referCode, setReferCode] = useState('');
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(1);
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -35,10 +35,8 @@ const Registration = ({
         setErrorCode('confirmPassword');
         setErrorMessage('Passwords do not match');
       } else {
-        AsyncStorage.setItem("Login","1")
-navigation.navigate("BottomNavigation")
-navigationRester("BottomNavigation")
-        // registerUser();
+       
+        registerUser();
         setLoading(true);
       }
     } else {
@@ -73,9 +71,10 @@ navigationRester("BottomNavigation")
       .then((response) => response.json())
       .then((result) =>{
         if(result.status === "200"){
-              AsyncStorage.setItem("Login","1")
               AsyncStorage.setItem("user",JSON.stringify("user",result.user))
-
+              AsyncStorage.setItem("Login","1")
+              navigation.navigate("BottomNavigation")
+              navigationRester("BottomNavigation")
               // ControlLogin()
               setErrorCode()
         }
@@ -289,10 +288,10 @@ To
           value={confirmPassword}
         />
       </View>
-      <Text
+      {/* <Text
       onPress={()=> HandelIndex() }
       
-      style={[styles.buttonText,{alignSelf:"flex-end"}]}>{loading === true ? "Loading..":"BACK"}</Text>
+      style={[styles.buttonText,{alignSelf:"flex-end"}]}>{loading === true ? "Loading..":"BACK"}</Text> */}
       <TouchableOpacity style={[styles.button,{marginTop:10}]} onPress={handleRegistration}>
         <Text style={styles.buttonText}>{loading === true ? 'Loading...' : 'Register'}</Text>
       </TouchableOpacity>

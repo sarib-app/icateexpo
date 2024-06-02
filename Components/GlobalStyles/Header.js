@@ -53,7 +53,7 @@ async function get_CartCount(){
 <Text
 style={GlobalStyles.HeaderText}
 >
-  CoffeeOn.
+  ICate Bot Coffee
 </Text>
       </View>
 

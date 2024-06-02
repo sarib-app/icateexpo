@@ -13,22 +13,14 @@ import Colors from '../GlobalStyles/colors';
 import GoBack from '../GlobalStyles/GoBack';
 import { useRoute } from '@react-navigation/native';
 // import UpdateWithId from '../DBCalls/UpdateWithId';
-const ProfileDetails = () => {
+const ProfileDetails = ({route}) => {
 
 // const route = useRoute()
-// const userr = route.params
+const userData = route.params
+console.log(userData)
 const iconColor = Colors.FontColorI
 const [loading,setLoading]=useState(false)
-const [user,setUser]=useState(
-    {
-        id:1,
-        email:"userr.email",
-        firstname:"userr.firstname",
-        Lastname:"userr.lastname",
-        Phone:"userr.phone",
-        username:"userr.username"
-    }
-)
+const [user,setUser]=useState(userData.userData)
 
 
 function handleUpdate(){
@@ -228,21 +220,21 @@ style={Styles.IconWrapper}
 <Text
 style={GlobalStyles.textStyle}
 >
-  Refferal Earnings
+  Last JGK recieved:
 </Text>
 </View>
 
 <Text
 style={Styles.SectionTitle}
 >
-  3 TTC
+  {user.last_jgk_received_at}
 </Text>
 
 </View>
 
 
 
-<View style={Styles.CardWrapperBottom}>
+{/* <View style={Styles.CardWrapperBottom}>
 
 <View
   style={{flexDirection:'row',alignItems:'center'}}
@@ -269,7 +261,7 @@ style={Styles.SectionTitle}
   30
 </Text>
 
-</View>
+</View> */}
 
 </View>
 
@@ -289,7 +281,7 @@ style={Styles.SectionTitle}
 <View
 style={Styles.CardWrapperALL}
 >
-<View style={[Styles.CardWrapperTextInput,{borderColor:user.email.length <1 ?Colors.danger:Colors.PrimaryColor,borderBottomWidth:1}]}>
+<View style={[Styles.CardWrapperTextInput,{borderColor:Colors.PrimaryColor,borderBottomWidth:1}]}>
 
 <View
   style={{flexDirection:'row',alignItems:'center'}}
@@ -306,12 +298,9 @@ style={Styles.IconWrapper}
 
 </View>
 <TextInput
-value={user.email}
+value={user.username}
 style={[GlobalStyles.textStyle,{flex:1}]}
-onChangeText={(text) =>  setUser((prevUser) => ({
-    ...prevUser,
-    email: text
-  })) }
+editable={false}
 
 />
 <FontAwesome5
@@ -325,84 +314,12 @@ style={Styles.IconWrapper}
 
 
 
-<View style={[Styles.CardWrapperTextInput,{borderColor:user.firstname.length <1 ?Colors.danger:Colors.PrimaryColor,borderBottomWidth:1}]}>
-
-
-<View
-  style={{flexDirection:'row',alignItems:'center'}}
-  >
-
-
-<FontAwesome5
-name='headset'
-color={Colors.FontColorI}
-size={20}
-style={Styles.IconWrapper}
-
-/>
-
-</View>
-
-<TextInput
-value={user.firstname}
-style={[GlobalStyles.textStyle,{flex:1}]}
-onChangeText={(text) =>  setUser((prevUser) => ({
-    ...prevUser,
-    firstname: text
-  })) }
-
-/>
-<FontAwesome5
-name='pencil-alt'
-color={Colors.FontColorI}
-size={14}
-style={Styles.IconWrapper}
-
-/>
-
-</View>
 
 
 
-<View style={[Styles.CardWrapperTextInput,{borderColor:user.Lastname.length <1 ?Colors.danger:Colors.PrimaryColor,borderBottomWidth:1}]}>
-
-<View
-  style={{flexDirection:'row',alignItems:'center'}}
-  >
 
 
-<MaterialIcons
-name='privacy-tip'
-color={Colors.FontColorI}
-size={20}
-style={Styles.IconWrapper}
-
-/>
-
-</View>
-<TextInput
-value={user.Lastname}
-style={[GlobalStyles.textStyle,{flex:1}]}
-onChangeText={(text) =>  setUser((prevUser) => ({
-    ...prevUser,
-    Lastname: text
-  })) }
-
-/>
-
-<FontAwesome5
-name='pencil-alt'
-color={Colors.FontColorI}
-size={14}
-style={Styles.IconWrapper}
-
-/>
-
-</View>
-
-
-
-<View style={[Styles.CardWrapperTextInput,{borderColor:user.Phone.length <1 ?Colors.danger:"transparent",borderBottomWidth:1}]}>
+<View style={[Styles.CardWrapperTextInput,{borderColor:"transparent",borderBottomWidth:1}]}>
 
 <View
   style={{flexDirection:'row',alignItems:'center'}}
@@ -418,7 +335,7 @@ style={Styles.IconWrapper}
 
 </View>
 <TextInput
-value={user.Phone}
+value={user.phone_number}
 style={[GlobalStyles.textStyle,{flex:1}]}
 onChangeText={(text) =>  setUser((prevUser) => ({
     ...prevUser,

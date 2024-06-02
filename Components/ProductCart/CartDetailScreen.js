@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Colors from '../GlobalStyles/colors';
@@ -11,9 +11,14 @@ const CartDetailScreen = () => {
   const [cartItems, setCartItems] = useState([]);
   const [cartGoods,setCartGoods] = useState([])
   const [totalBill, setTotalBill] = useState(0);
+  const [user,setUser] = useState([])
+  const [loading,setloading] = useState(false)
+
+
 
   useEffect(() => {
     // Fetch cart items from AsyncStorage here
+
     fetchCartItems();
   }, []);
 
@@ -21,6 +26,12 @@ const CartDetailScreen = () => {
     try {
       const cartData = await AsyncStorage.getItem('cartData');
       const cartGoods = await AsyncStorage.getItem('cartGoods');
+      const user = await AsyncStorage.getItem('user');
+      const ParseUser= JSON.parse(user)
+      setUser(ParseUser)
+      
+
+
 
       if (cartData) {
         const parsedCartData = JSON.parse(cartData);
@@ -157,6 +168,7 @@ const CartDetailScreen = () => {
 
 
   const makeApiCall = async () => {
+    setloading(true)
     const apiUrl = 'https://f.aiwan88.net/cp/coffee/v2/genPickUpCode';
   
     const token = '4YgUjOLnZ6x6b3tPVOCBMX5y';
@@ -164,10 +176,7 @@ const CartDetailScreen = () => {
     const jsonStr = JSON.stringify({
       createTime: '2023-10-10 10:00:00',
       payTime: '2023-10-10 10:10:10',
-      goods: [
-        { id: 11937, count: 2, temp: 1, sweet: 1 },
-        { id: 11938, count: 1, temp: 1, sweet: 1 },
-      ],
+      goods: cartGoods,
     });
   
     try {
@@ -192,9 +201,63 @@ const CartDetailScreen = () => {
       console.error('API call failed:', error);
       // Handle the error, for example, display an error alert
     }
-    navigation.navigate("OrderTakenScreen")
+
+    convertData()
+
+    // navigation.navigate("OrderTakenScreen")
   };
   
+  const convertData = () => {
+    const convertedData = cartItems.map(item => ({
+      id: item.product.id,
+      name: item.product.title,
+      quantity: item.quantity,
+      add_on: Object.entries(item.addOns)
+                    .filter(([key, value]) => value)
+                    .map(([key, value]) => key),
+      total_price: item.totalPrice
+    }));
+
+    console.log('Conversion successful:', convertedData);
+   
+    SaveOrderRecord(convertedData)
+  };
+  function SaveOrderRecord(convertedData){
+    const data = {
+      totalBill:totalBill,
+      pickupCode:62808659
+    }
+
+    const myHeaders = new Headers();
+myHeaders.append("Content-Type", "application/json");
+
+const raw = JSON.stringify({
+  "pickcode": 12321,
+  "user_id": user.id,
+  "status": "Placed",
+  "items": convertedData,
+  "total_bill": totalBill
+});
+
+const requestOptions = {
+  method: "POST",
+  headers: myHeaders,
+  body: raw,
+  redirect: "follow"
+};
+
+fetch("https://zhang.alphanitesofts.net/api/post_order", requestOptions)
+  .then((response) => response.json())
+  .then((result) => {
+    navigation.navigate("OrderTakenScreen",{data:data})
+    
+    console.log(result)})
+  .catch((error) => {
+    // Alert.alert("Ooops","Something went wrong!")
+    console.error("eror in local api",error)}).finally(()=>{
+    setloading(false)
+  })
+  }
   // Example us
 
 
@@ -225,14 +288,28 @@ const CartDetailScreen = () => {
         <Text style={styles.priceText}>GST (0%): ${calculateGST().toFixed(2)}</Text>
         <Text style={styles.priceText}>Total Price: ${calculateTotalPrice().toFixed(2)}</Text>
       </View>
+      {
+        loading === true ?
       <TouchableOpacity 
-      // onPress={()=> navigation.navigate("OrderTakenScreen")}
-      onPress={()=> makeApiCall()}
+     
 
       style={styles.proceedButton}>
+        
+        <Text style={styles.proceedButtonText}>Loading....</Text>
+      </TouchableOpacity>:
+      <TouchableOpacity 
+      // onPress={()=> navigation.navigate("OrderTakenScreen")}
+      onPress={()=>{
+        cartItems.length > 0 &&  makeApiCall()
+      }}
+
+      style={styles.proceedButton}>
+        
         <Text style={styles.proceedButtonText}>Proceed to order - Total: ${calculateTotalPrice().toFixed(2)}</Text>
       </TouchableOpacity>
-    </View>
+      }
+
+</View>
   );
 };
 

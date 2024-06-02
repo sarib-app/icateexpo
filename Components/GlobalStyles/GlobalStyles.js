@@ -5,7 +5,7 @@ import {
 // import { Divider } from 'react-native-paper';
 import Colors from './colors';
 const WindowWidth = Dimensions.get('screen').width
-  const WindowHeight = Dimensions.get('window').height; 
+  const WindowHeight = Dimensions.get('screen').height; 
   const GlobalStyles = StyleSheet.create({ 
 Container:{
     width:WindowWidth,

@@ -24,10 +24,10 @@ const RestaurantListItem = ({ restaurant }) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    width:WindowWidth/1.02,
+    width:WindowWidth/1.1,
     borderRadius:8,
     alignSelf:"center",
-    backgroundColor:Colors.Dark,
+    backgroundColor:Colors.BgColor,
     marginBottom:10,
     padding: 10,
     elevation:2,
@@ -51,11 +51,11 @@ const styles = StyleSheet.create({
   },
   description: {
     color: Colors.lightTxt,
-    width:"80%"
+    width:"70%"
   },
   rating: {
     marginTop: 5,
-    color: "yellow  ",
+    color: "yellow",
   },
 });
 
